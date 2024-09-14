@@ -695,13 +695,13 @@ export function Discover() {
           </div>
         </div>
       </div>
-      <div className="px-10">
+      <div className="">
         <div className="flex items-center mt-5">
           <Divider marginClass="mr-5" />
           <h1 className="text-4xl font-bold text-white mx-auto">Movies</h1>
           <Divider marginClass="ml-5" />
         </div>
-        <div className="grid grid-cols-1 gap-8">
+        <div className="grid grid-cols-1 gap-8 mt-8">
           {" "}
           {categories.map((category) => (
             <div
