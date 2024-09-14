@@ -340,7 +340,7 @@ export function Discover() {
         </h2>
         <div
           id={`carousel-${categorySlug}`}
-          className="flex whitespace-nowrap pt-4 overflow-auto scrollbar rounded-xl overflow-y-hidden"
+          className="flex whitespace-nowrap pt-4 pb-2 overflow-auto scrollbar rounded-xl overflow-y-hidden"
           style={{
             scrollbarWidth: "thin",
             // scrollbarColor: `${bgColor} transparent`,
@@ -371,7 +371,7 @@ export function Discover() {
                     }`,
                   )
                 }
-                className="text-center relative mt-3 mx-[0.285em] transition-transform hover:scale-105 duration-[0.45s]"
+                className="max-h-200 text-center relative mt-3 mx-[0.285em] transition-transform hover:scale-105 duration-[0.45s]"
                 style={{ flex: `0 0 ${movieWidth}` }} // Set a fixed width for each movie
               >
                 <Flare.Base className="group cursor-pointer rounded-xl relative p-[0.65em] bg-background-main transition-colors duration-300 bg-transparent">
@@ -391,14 +391,32 @@ export function Discover() {
                     loading="lazy"
                     className="rounded-xl relative"
                   />
-                  <h1 className="group relative pt-2 text-[13.5px] whitespace-normal duration-[0.35s] font-semibold text-white opacity-0 group-hover:opacity-100">
-                    {isTVShow
-                      ? (media.name?.length ?? 0) > 32
-                        ? `${media.name?.slice(0, 32)}...`
-                        : media.name
-                      : (media.title?.length ?? 0) > 32
-                        ? `${media.title?.slice(0, 32)}...`
-                        : media.title}
+                  <h1 className="group relative pt-2 pr-1 text-[13.5px] whitespace-normal duration-[0.35s] font-semibold text-white opacity-0 group-hover:opacity-100 flex items-center">
+                    <span className="flex-1 text-center">
+                      {isTVShow
+                        ? (media.name?.length ?? 0) > 32
+                          ? `${media.name?.slice(0, 32)}...`
+                          : media.name
+                        : (media.title?.length ?? 0) > 32
+                          ? `${media.title?.slice(0, 32)}...`
+                          : media.title}
+                    </span>
+                    <button
+                      type="button"
+                      onClick={(e) => {
+                        e.preventDefault();
+                        e.stopPropagation();
+                        window.open(
+                          `https://www.themoviedb.org/${isTVShow ? "tv" : "movie"}/${media.id}`,
+                          "_blank",
+                        );
+                      }}
+                    >
+                      <Icon
+                        className="text-xs font-semibold text-type-secondary"
+                        icon={Icons.CIRCLE_QUESTION}
+                      />
+                    </button>
                   </h1>
                 </Flare.Base>
               </a>
@@ -659,7 +677,13 @@ export function Discover() {
       )}
       <div className="mt-8 p-4 w-full max-w-screen-xl mx-auto">
         <h2 className="text-2xl font-bold mb-4 text-center">Movies:</h2>
-        <div className="flex mb-4 overflow-x-auto">
+        <div
+          className="flex mb-4 overflow-x-auto"
+          style={{
+            scrollbarWidth: "thin",
+            scrollbarColor: "transparent transparent",
+          }}
+        >
           <div className="flex space-x-2 py-1">
             {renderTopMovieButtons()}
             {renderMovieButtons()}
@@ -668,7 +692,13 @@ export function Discover() {
 
         <h2 className="text-2xl font-bold mb-4 text-center">TV Shows:</h2>
         <div className="flex mb-4 overflow-x-auto">
-          <div className="flex items-center space-x-2">
+          <div
+            className="flex mb-4 overflow-x-auto"
+            style={{
+              scrollbarWidth: "thin",
+              scrollbarColor: "transparent transparent",
+            }}
+          >
             <div className="flex space-x-2 py-1">
               {renderTopTvButtons()}
               {renderTvButtons()}
