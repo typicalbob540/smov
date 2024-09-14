@@ -5,7 +5,6 @@ import { useTranslation } from "react-i18next";
 import { useNavigate } from "react-router-dom";
 
 import { get } from "@/backend/metadata/tmdb";
-import { ThiccContainer } from "@/components/layout/ThinContainer";
 import { Divider } from "@/components/utils/Divider";
 import { Flare } from "@/components/utils/Flare";
 import { conf } from "@/setup/config";
@@ -22,6 +21,35 @@ import {
 import { SubPageLayout } from "./layouts/SubPageLayout";
 import { Icon, Icons } from "../components/Icon";
 import { PageTitle } from "./parts/util/PageTitle";
+
+function ScrollToTopButton() {
+  const [isVisible, setIsVisible] = useState(false);
+
+  const toggleVisibility = () => {
+    const scrolled = window.scrollY > 300; // Adjust scroll position as needed
+    setIsVisible(scrolled);
+  };
+
+  useEffect(() => {
+    window.addEventListener("scroll", toggleVisibility);
+    return () => window.removeEventListener("scroll", toggleVisibility);
+  }, []);
+
+  const scrollToTop = () => {
+    window.scrollTo({ top: 0, behavior: "smooth" });
+  };
+
+  return (
+    <button
+      type="button"
+      className={`fixed bottom-4 left-1/2 transform -translate-x-1/2 flex items-center space-x-2 rounded-full px-6 py-3 text-lg font-semibold text-white bg-pill-background bg-opacity-80 hover:bg-pill-backgroundHover transition-opacity duration-300 ease-in-out ${isVisible ? "opacity-100" : "opacity-0"}`}
+      onClick={scrollToTop}
+    >
+      <Icon icon={Icons.CHEVRON_UP} className="text-2xl pr-2" />
+      Back to top
+    </button>
+  );
+}
 
 export function Discover() {
   const { t } = useTranslation();
@@ -120,13 +148,13 @@ export function Discover() {
         });
 
         // Shuffle the array of genres
-        for (let i = data.genres.length - 1; i > 0; i -= 1) {
-          const j = Math.floor(Math.random() * (i + 1));
-          [data.genres[i], data.genres[j]] = [data.genres[j], data.genres[i]];
-        }
+        // for (let i = data.genres.length - 1; i > 0; i -= 1) {
+        //   const j = Math.floor(Math.random() * (i + 1));
+        //   [data.genres[i], data.genres[j]] = [data.genres[j], data.genres[i]];
+        // }
 
-        // Fetch only the first 6 TV show genres
-        setTVGenres(data.genres.slice(0, 6));
+        // Fetch only the first 10 TV show genres
+        setTVGenres(data.genres.slice(0, 10));
       } catch (error) {
         console.error("Error fetching TV show genres:", error);
       }
@@ -176,13 +204,13 @@ export function Discover() {
         });
 
         // Shuffle the array of genres
-        for (let i = data.genres.length - 1; i > 0; i -= 1) {
-          const j = Math.floor(Math.random() * (i + 1));
-          [data.genres[i], data.genres[j]] = [data.genres[j], data.genres[i]];
-        }
+        // for (let i = data.genres.length - 1; i > 0; i -= 1) {
+        //   const j = Math.floor(Math.random() * (i + 1));
+        //   [data.genres[i], data.genres[j]] = [data.genres[j], data.genres[i]];
+        // }
 
-        // Fetch only the first 4 genres
-        setGenres(data.genres.slice(0, 4));
+        // Fetch only the first 12 genres
+        setGenres(data.genres.slice(0, 12));
       } catch (error) {
         console.error("Error fetching genres:", error);
       }
@@ -260,33 +288,19 @@ export function Discover() {
     };
   }, []);
 
-  useEffect(() => {
-    if (carouselRef.current && gradientRef.current) {
-      const carouselHeight = carouselRef.current.getBoundingClientRect().height;
-      gradientRef.current.style.top = `${carouselHeight}px`;
-      gradientRef.current.style.bottom = `${carouselHeight}px`;
-    }
-  }, [movieWidth]);
-
   const browser = !!window.chrome; // detect chromium browser
   let isScrolling = false;
 
-  function handleWheel(e: React.WheelEvent, categorySlug: string) {
+  function handleWheel(e: React.WheelEvent, _categorySlug: string) {
     if (isScrolling) {
       return;
     }
 
     isScrolling = true;
-    const carousel = carouselRefs.current[categorySlug];
-    if (carousel && !e.deltaX) {
-      const movieElements = carousel.getElementsByTagName("a");
-      if (movieElements.length > 0) {
-        if (e.deltaY < 5) {
-          scrollCarousel(categorySlug, "left");
-        } else {
-          scrollCarousel(categorySlug, "right");
-        }
-      }
+
+    if (Math.abs(e.deltaX) > Math.abs(e.deltaY)) {
+      e.stopPropagation();
+      e.preventDefault();
     }
 
     if (browser) {
@@ -299,16 +313,13 @@ export function Discover() {
     }
   }
 
-  const [isHovered, setIsHovered] = useState(false);
-  const toggleHover = (isHovering: boolean) => setIsHovered(isHovering);
-
   useEffect(() => {
-    document.body.style.overflow = isHovered ? "hidden" : "auto";
-
-    return () => {
-      document.body.style.overflow = "auto";
-    };
-  }, [isHovered]);
+    if (carouselRef.current && gradientRef.current) {
+      const carouselHeight = carouselRef.current.getBoundingClientRect().height;
+      gradientRef.current.style.top = `${carouselHeight}px`;
+      gradientRef.current.style.bottom = `${carouselHeight}px`;
+    }
+  }, [movieWidth]);
 
   function renderMovies(medias: Media[], category: string, isTVShow = false) {
     const categorySlug = `${category.toLowerCase().replace(/ /g, "-")}${Math.random()}`; // Convert the category to a slug
@@ -323,8 +334,8 @@ export function Discover() {
 
     // https://tailwindcss.com/docs/border-style
     return (
-      <div className="relative overflow-hidden mt-2">
-        <h2 className="text-2xl cursor-default font-bold text-white sm:text-3xl md:text-2xl mx-auto pl-5">
+      <div className="relative overflow-hidden">
+        <h2 className="mt-0 text-2xl cursor-default font-bold text-white sm:text-3xl md:text-2xl mx-auto pl-5">
           {displayCategory}
         </h2>
         <div
@@ -338,8 +349,6 @@ export function Discover() {
           ref={(el) => {
             carouselRefs.current[categorySlug] = el;
           }}
-          onMouseEnter={() => toggleHover(true)}
-          onMouseLeave={() => toggleHover(false)}
           onWheel={(e) => handleWheel(e, categorySlug)}
         >
           {medias
@@ -362,7 +371,7 @@ export function Discover() {
                     }`,
                   )
                 }
-                className="text-center relative mt-3 mx-[0.285em] mb-3 transition-transform hover:scale-105 duration-[0.45s]"
+                className="text-center relative mt-3 mx-[0.285em] transition-transform hover:scale-105 duration-[0.45s]"
                 style={{ flex: `0 0 ${movieWidth}` }} // Set a fixed width for each movie
               >
                 <Flare.Base className="group cursor-pointer rounded-xl relative p-[0.65em] bg-background-main transition-colors duration-300 bg-transparent">
@@ -472,29 +481,144 @@ export function Discover() {
     };
   }, [countdown]);
 
+  const renderTopMovieButtons = () => {
+    const buttons = [];
+    // Categories
+    for (const [index, category] of categories.entries()) {
+      buttons.push(
+        <button
+          type="button"
+          key={index}
+          className="whitespace-nowrap flex items-center space-x-2 rounded-full px-4 text-white py-2 bg-pill-background bg-opacity-50 hover:bg-pill-backgroundHover transition-[background,transform] duration-100 hover:scale-105"
+          onClick={() => {
+            const element = document.getElementById(
+              `carousel-${category.name.toLowerCase().replace(/ /g, "-")}`,
+            );
+            if (element) {
+              element.scrollIntoView({
+                behavior: "smooth",
+                block: "center",
+                inline: "center",
+              });
+            }
+          }}
+        >
+          {category.name}
+        </button>,
+      );
+    }
+    return buttons;
+  };
+
+  const renderMovieButtons = () => {
+    const buttons = [];
+    // Genres
+    for (const [index, genre] of genres.entries()) {
+      buttons.push(
+        <button
+          type="button"
+          key={index + categories.length}
+          className="whitespace-nowrap flex items-center space-x-2 rounded-full px-4 text-white py-2 bg-pill-background bg-opacity-50 hover:bg-pill-backgroundHover transition-[background,transform] duration-100 hover:scale-105"
+          onClick={() => {
+            const element = document.getElementById(
+              `carousel-${genre.name.toLowerCase().replace(/ /g, "-")}`,
+            );
+            if (element) {
+              element.scrollIntoView({
+                behavior: "smooth",
+                block: "center",
+                inline: "center",
+              });
+            }
+          }}
+        >
+          {genre.name}
+        </button>,
+      );
+    }
+    return buttons;
+  };
+
+  const renderTopTvButtons = () => {
+    const buttons = [];
+    // TV Categories
+    for (const [index, category] of tvCategories.entries()) {
+      buttons.push(
+        <button
+          type="button"
+          key={index}
+          className="whitespace-nowrap flex items-center space-x-2 rounded-full px-4 text-white py-2 bg-pill-background bg-opacity-50 hover:bg-pill-backgroundHover transition-[background,transform] duration-100 hover:scale-105"
+          onClick={() => {
+            const element = document.getElementById(
+              `tv-carousel-${category.name.toLowerCase().replace(/ /g, "-")}`,
+            );
+            if (element) {
+              element.scrollIntoView({
+                behavior: "smooth",
+                block: "center",
+                inline: "center",
+              });
+            }
+          }}
+        >
+          {category.name}
+        </button>,
+      );
+    }
+    return buttons;
+  };
+
+  const renderTvButtons = () => {
+    const buttons = [];
+    // TV Genres
+    for (const [index, genre] of tvGenres.entries()) {
+      buttons.push(
+        <button
+          type="button"
+          key={index + tvCategories.length}
+          className="whitespace-nowrap flex items-center space-x-2 rounded-full px-4 text-white py-2 bg-pill-background bg-opacity-50 hover:bg-pill-backgroundHover transition-[background,transform] duration-100 hover:scale-105"
+          onClick={() => {
+            const element = document.getElementById(
+              `tv-carousel-${genre.name.toLowerCase().replace(/ /g, "-")}`,
+            );
+            if (element) {
+              element.scrollIntoView({
+                behavior: "smooth",
+                block: "center",
+                inline: "center",
+              });
+            }
+          }}
+        >
+          {genre.name}
+        </button>,
+      );
+    }
+    return buttons;
+  };
+
   return (
     <SubPageLayout>
-      <div className="mb-16 sm:mb-2">
-        <Helmet>
-          {/* Hide scrollbar lmao */}
-          <style type="text/css">{`
+      <Helmet>
+        {/* Hide scrollbar lmao */}
+        <style type="text/css">{`
             html, body {
               scrollbar-width: none;
               -ms-overflow-style: none;
             }
           `}</style>
-        </Helmet>
-        <PageTitle subpage k="global.pages.discover" />
-        <div className="mt-44 space-y-16 text-center">
-          <div className="relative z-10 mb-16">
-            <h1 className="text-4xl cursor-default font-bold text-white">
-              {t("global.pages.discover")}
-            </h1>
-          </div>
-        </div>
+      </Helmet>
+      <PageTitle subpage k="global.pages.discover" />
+      <div className="w-full max-w-screen-xl mx-auto px-4 text-center mt-12 mb-12">
+        <h1 className="text-5xl font-extrabold text-transparent bg-clip-text bg-gradient-to-r from-purple-500 to-blue-500">
+          {t("global.pages.discover")} Movies & TV
+        </h1>
+        <p className="text-lg mt-4 text-gray-400">
+          Explore the latest hits and timeless classics.
+        </p>
       </div>
-      <ThiccContainer>
-        <div className="flex items-center justify-center mb-6">
+      <div className="w-full max-w-screen-xl mx-auto px-4">
+        <div className="flex items-center justify-center">
           <button
             type="button"
             className="flex items-center space-x-2 rounded-full px-4 text-white py-2 bg-pill-background bg-opacity-50 hover:bg-pill-backgroundHover transition-[background,transform] duration-100 hover:scale-105"
@@ -524,20 +648,47 @@ export function Discover() {
             </span>
           </button>
         </div>
-        {randomMovie && (
-          <div className="mt-4 mb-4 text-center">
-            <p>
-              Now Playing <span className="font-bold">{randomMovie.title}</span>{" "}
-              in {countdown}
-            </p>
+      </div>
+      {randomMovie && (
+        <div className="mt-4 mb-4 text-center">
+          <p>
+            Now Playing <span className="font-bold">{randomMovie.title}</span>{" "}
+            in {countdown}
+          </p>
+        </div>
+      )}
+      <div className="mt-8 p-4 w-full max-w-screen-xl mx-auto">
+        <h2 className="text-2xl font-bold mb-4 text-center">Movies:</h2>
+        <div className="flex mb-4 overflow-x-auto">
+          <div className="flex space-x-2 py-1">
+            {renderTopMovieButtons()}
+            {renderMovieButtons()}
           </div>
-        )}
-        <div className="flex flex-col">
+        </div>
+
+        <h2 className="text-2xl font-bold mb-4 text-center">TV Shows:</h2>
+        <div className="flex mb-4 overflow-x-auto">
+          <div className="flex items-center space-x-2">
+            <div className="flex space-x-2 py-1">
+              {renderTopTvButtons()}
+              {renderTvButtons()}
+            </div>
+          </div>
+        </div>
+      </div>
+      <div className="px-10">
+        <div className="flex items-center mt-5">
+          <Divider marginClass="mr-5" />
+          <h1 className="text-4xl font-bold text-white mx-auto">Movies</h1>
+          <Divider marginClass="ml-5" />
+        </div>
+        <div className="grid grid-cols-1 gap-8">
+          {" "}
           {categories.map((category) => (
             <div
               key={category.name}
               id={`carousel-${category.name.toLowerCase().replace(/ /g, "-")}`}
-              className="mt-8"
+              className=""
             >
               {renderMovies(categoryMovies[category.name] || [], category.name)}
             </div>
@@ -546,21 +697,24 @@ export function Discover() {
             <div
               key={`${genre.id}|${genre.name}`}
               id={`carousel-${genre.name.toLowerCase().replace(/ /g, "-")}`}
-              className="mt-8"
+              className=""
             >
               {renderMovies(genreMovies[genre.id] || [], genre.name)}
             </div>
           ))}
-          <div className="flex items-center">
-            <Divider marginClass="mr-5" />
-            <h1 className="text-4xl font-bold text-white mx-auto">Shows</h1>
-            <Divider marginClass="ml-5" />
-          </div>
+        </div>
+        <div className="flex items-center mt-10">
+          <Divider marginClass="mr-5" />
+          <h1 className="text-4xl font-bold text-white mx-auto">Shows</h1>
+          <Divider marginClass="ml-5" />
+        </div>
+        <div className="grid grid-cols-1 gap-4 mt-8">
+          {" "}
           {tvCategories.map((category) => (
             <div
               key={category.name}
-              id={`carousel-${category.name.toLowerCase().replace(/ /g, "-")}`}
-              className="mt-8"
+              id={`tv-carousel-${category.name.toLowerCase().replace(/ /g, "-")}`}
+              className="mt-2"
             >
               {renderMovies(
                 categoryShows[category.name] || [],
@@ -572,14 +726,15 @@ export function Discover() {
           {tvGenres.map((genre) => (
             <div
               key={`${genre.id}|${genre.name}`}
-              id={`carousel-${genre.name.toLowerCase().replace(/ /g, "-")}`}
-              className="mt-8"
+              id={`tv-carousel-${genre.name.toLowerCase().replace(/ /g, "-")}`}
+              className=""
             >
               {renderMovies(tvShowGenres[genre.id] || [], genre.name, true)}
             </div>
           ))}
         </div>
-      </ThiccContainer>
+      </div>
+      <ScrollToTopButton />
     </SubPageLayout>
   );
 }
