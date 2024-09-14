@@ -42,11 +42,15 @@ function ScrollToTopButton() {
   return (
     <button
       type="button"
-      className={`fixed bottom-4 left-1/2 transform -translate-x-1/2 flex items-center space-x-2 rounded-full px-6 py-3 text-lg font-semibold text-white bg-pill-background bg-opacity-80 hover:bg-pill-backgroundHover transition-opacity duration-300 ease-in-out ${isVisible ? "opacity-100" : "opacity-0"}`}
+      className={`fixed bottom-4 left-1/2 transform -translate-x-1/2 flex items-center space-x-2 rounded-full px-6 py-3 text-lg font-semibold text-white bg-pill-background bg-opacity-80 hover:bg-pill-backgroundHover transition-opacity transform hover:scale-105 transition-transform duration-300 ease-in-out ${isVisible ? "opacity-100" : "opacity-0"}`}
       onClick={scrollToTop}
     >
-      <Icon icon={Icons.CHEVRON_UP} className="text-2xl pr-2" />
-      Back to top
+      {/* Glow Effect (Under the Button) */}
+      <div className="absolute inset-0 mx-auto h-[50px] w-[200px] rounded-full blur-[50px] opacity-50 bg-gradient-to-r from-purple-500 to-blue-500 transform translate-y-[0px] pointer-events-none z-0" />
+
+      {/* Button Content */}
+      <Icon icon={Icons.CHEVRON_UP} className="text-2xl pr-2 z-10" />
+      <span className="z-10">Back to top</span>
     </button>
   );
 }
@@ -340,7 +344,7 @@ export function Discover() {
         </h2>
         <div
           id={`carousel-${categorySlug}`}
-          className="flex whitespace-nowrap pt-4 pb-2 overflow-auto scrollbar rounded-xl overflow-y-hidden"
+          className="flex whitespace-nowrap pt-4 pb-3 overflow-auto scrollbar rounded-xl overflow-y-hidden"
           style={{
             scrollbarWidth: "thin",
             // scrollbarColor: `${bgColor} transparent`,
@@ -371,7 +375,7 @@ export function Discover() {
                     }`,
                   )
                 }
-                className="max-h-200 text-center relative mt-3 mx-[0.285em] transition-transform hover:scale-105 duration-[0.45s]"
+                className="discover-card max-h-200 text-center relative mt-3 mx-[0.285em] transition-transform duration-[0.45s] hover:scale-105"
                 style={{ flex: `0 0 ${movieWidth}` }} // Set a fixed width for each movie
               >
                 <Flare.Base className="group cursor-pointer rounded-xl relative p-[0.65em] bg-background-main transition-colors duration-300 bg-transparent">
@@ -401,22 +405,6 @@ export function Discover() {
                           ? `${media.title?.slice(0, 32)}...`
                           : media.title}
                     </span>
-                    <button
-                      type="button"
-                      onClick={(e) => {
-                        e.preventDefault();
-                        e.stopPropagation();
-                        window.open(
-                          `https://www.themoviedb.org/${isTVShow ? "tv" : "movie"}/${media.id}`,
-                          "_blank",
-                        );
-                      }}
-                    >
-                      <Icon
-                        className="text-xs font-semibold text-type-secondary"
-                        icon={Icons.CIRCLE_QUESTION}
-                      />
-                    </button>
                   </h1>
                 </Flare.Base>
               </a>
@@ -627,11 +615,12 @@ export function Discover() {
           `}</style>
       </Helmet>
       <PageTitle subpage k="global.pages.discover" />
-      <div className="w-full max-w-screen-xl mx-auto px-4 text-center mt-12 mb-12">
-        <h1 className="text-5xl font-extrabold text-transparent bg-clip-text bg-gradient-to-r from-purple-500 to-blue-500">
+      <div className="relative w-full max-w-screen-xl mx-auto px-4 text-center mt-12 mb-12">
+        <div className="absolute inset-0 mx-auto h-[400px] max-w-[800px] rounded-full blur-[100px] opacity-20 bg-gradient-to-r from-purple-500 to-blue-500 transform -translate-y-[100px] pointer-events-none" />
+        <h1 className="relative text-5xl font-extrabold text-transparent bg-clip-text bg-gradient-to-r from-purple-500 to-blue-500 z-10">
           {t("global.pages.discover")} Movies & TV
         </h1>
-        <p className="text-lg mt-4 text-gray-400">
+        <p className="relative text-lg mt-4 text-gray-400 z-10">
           Explore the latest hits and timeless classics.
         </p>
       </div>
