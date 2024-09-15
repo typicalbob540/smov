@@ -688,9 +688,6 @@ export function DiscoverContent() {
       <div className="mt-8 p-4 w-full max-w-screen-xl mx-auto">
         <h2 className="text-2xl font-bold mb-4 text-center">Movies:</h2>
         <div className="flex mb-4 overflow-x-auto">
-          <div className="flex space-x-2 py-1">
-            <Icon icon={Icons.CHEVRON_LEFT} className="text-2xl py-2" />
-          </div>
           <div
             className="flex mb-4 overflow-x-auto"
             style={{
@@ -703,16 +700,10 @@ export function DiscoverContent() {
               {renderMovieButtons()}
             </div>
           </div>
-          <div className="flex space-x-2 py-1">
-            <Icon icon={Icons.CHEVRON_RIGHT} className="text-2xl py-2" />
-          </div>
         </div>
 
         <h2 className="text-2xl font-bold mb-4 text-center">TV Shows:</h2>
         <div className="flex mb-4 overflow-x-auto">
-          <div className="flex space-x-2 py-1">
-            <Icon icon={Icons.CHEVRON_LEFT} className="text-2xl py-2" />
-          </div>
           <div
             className="flex mb-4 overflow-x-auto"
             style={{
@@ -724,9 +715,6 @@ export function DiscoverContent() {
               {renderTopTvButtons()}
               {renderTvButtons()}
             </div>
-          </div>
-          <div className="flex space-x-2 py-1">
-            <Icon icon={Icons.CHEVRON_RIGHT} className="text-2xl py-2" />
           </div>
         </div>
       </div>
