@@ -353,12 +353,12 @@ export function Discover() {
     // https://tailwindcss.com/docs/border-style
     return (
       <div className="relative overflow-hidden">
-        <h2 className="mt-0 text-2xl cursor-default font-bold text-white sm:text-3xl md:text-2xl mx-auto pl-5">
+        <h2 className="mt-4 text-2xl cursor-default font-bold text-white sm:text-3xl md:text-2xl mx-auto pl-5">
           {displayCategory}
         </h2>
         <div
           id={`carousel-${categorySlug}`}
-          className="flex whitespace-nowrap pt-0 pb-3 overflow-auto scrollbar rounded-xl overflow-y-hidden"
+          className="flex whitespace-nowrap pt-0 pb-0 overflow-auto scrollbar rounded-xl overflow-y-hidden"
           style={{
             scrollbarWidth: "thin",
             // scrollbarColor: `${bgColor} transparent`,
@@ -729,7 +729,7 @@ export function Discover() {
           <h1 className="text-4xl font-bold text-white mx-auto">Movies</h1>
           <Divider marginClass="ml-5" />
         </div>
-        <div className="grid grid-cols-1 gap-8 mt-8">
+        <div className="grid grid-cols-1 gap-0 mt-4">
           {" "}
           {categories.map((category) => (
             <div
@@ -755,13 +755,13 @@ export function Discover() {
           <h1 className="text-4xl font-bold text-white mx-auto">Shows</h1>
           <Divider marginClass="ml-5" />
         </div>
-        <div className="grid grid-cols-1 gap-4 mt-8">
+        <div className="grid grid-cols-1 gap-0 mt-4">
           {" "}
           {tvCategories.map((category) => (
             <div
               key={category.name}
               id={`tv-carousel-${category.name.toLowerCase().replace(/ /g, "-")}`}
-              className="mt-2"
+              className=""
             >
               {renderMovies(
                 categoryShows[category.name] || [],
