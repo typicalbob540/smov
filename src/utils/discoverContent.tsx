@@ -281,7 +281,12 @@ export function DiscoverContent() {
       if (movieElements.length > 0) {
         const movieWidth = movieElements[0].offsetWidth;
         const visibleMovies = Math.floor(carousel.offsetWidth / movieWidth);
-        const scrollAmount = movieWidth * visibleMovies * 0.69; // Silly number :3
+
+        // Scroll 2 posters by default, but scroll 4 if more than 5 are visible
+        let scrollAmount = movieWidth * 2;
+        if (visibleMovies > 5) {
+          scrollAmount = movieWidth * 4;
+        }
 
         if (direction === "left") {
           carousel.scrollBy({ left: -scrollAmount, behavior: "smooth" });
