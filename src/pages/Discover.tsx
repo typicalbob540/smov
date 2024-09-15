@@ -42,7 +42,7 @@ function ScrollToTopButton() {
   return (
     <button
       type="button"
-      className={`fixed bottom-4 left-1/2 transform -translate-x-1/2 flex items-center space-x-2 rounded-full px-6 py-3 text-lg font-semibold text-white bg-pill-background bg-opacity-80 hover:bg-pill-backgroundHover transition-opacity transform hover:scale-105 transition-transform duration-300 ease-in-out ${isVisible ? "opacity-100" : "opacity-0"}`}
+      className={`fixed  max-h-[80px] min-h-[20px] max-w-[220px] min-w-[200px] bottom-4 left-1/2 transform -translate-x-1/2 flex items-center space-x-2 rounded-full px-4 py-3 text-lg font-semibold text-white bg-pill-background bg-opacity-80 hover:bg-pill-backgroundHover transition-opacity transform hover:scale-105 transition-transform duration-500 ease-in-out ${isVisible ? "opacity-100" : "opacity-0"}`}
       onClick={scrollToTop}
     >
       {/* Glow Effect (Under the Button) */}
