@@ -25,14 +25,23 @@ import { PageTitle } from "./parts/util/PageTitle";
 function ScrollToTopButton() {
   const [isVisible, setIsVisible] = useState(false);
 
+  // Throttle scroll event for performance
   const toggleVisibility = () => {
-    const scrolled = window.scrollY > 300; // Adjust scroll position as needed
+    const scrolled = window.scrollY > 300; // Show button after 300px of scrolling
     setIsVisible(scrolled);
   };
 
   useEffect(() => {
-    window.addEventListener("scroll", toggleVisibility);
-    return () => window.removeEventListener("scroll", toggleVisibility);
+    const handleScroll = () => {
+      // Throttle the scroll event to fire every 100ms for better performance
+      const timeout = setTimeout(toggleVisibility, 100);
+      return () => clearTimeout(timeout);
+    };
+
+    window.addEventListener("scroll", handleScroll);
+    return () => {
+      window.removeEventListener("scroll", handleScroll);
+    };
   }, []);
 
   const scrollToTop = () => {
@@ -42,11 +51,16 @@ function ScrollToTopButton() {
   return (
     <button
       type="button"
-      className={`fixed  max-h-[80px] min-h-[20px] max-w-[220px] min-w-[200px] bottom-4 left-1/2 transform -translate-x-1/2 flex items-center space-x-2 rounded-full px-4 py-3 text-lg font-semibold text-white bg-pill-background bg-opacity-80 hover:bg-pill-backgroundHover transition-opacity transform hover:scale-105 transition-transform duration-500 ease-in-out ${isVisible ? "opacity-100" : "opacity-0"}`}
       onClick={scrollToTop}
+      className={`fixed bottom-4 left-1/2 transform -translate-x-1/2 flex items-center space-x-2 rounded-full px-4 py-3 text-lg font-semibold text-white bg-pill-background bg-opacity-80 hover:bg-pill-backgroundHover transition-opacity transform hover:scale-105 transition-transform duration-500 ease-in-out ${
+        isVisible ? "opacity-100 visible" : "opacity-0 invisible"
+      }`}
+      style={{
+        transition: "opacity 0.4s ease-in-out, transform 0.4s ease-in-out",
+      }}
     >
-      {/* Glow Effect (Under the Button) */}
-      <div className="absolute inset-0 mx-auto h-[50px] w-[200px] rounded-full blur-[50px] opacity-50 bg-gradient-to-r from-purple-500 to-blue-500 transform translate-y-[0px] pointer-events-none z-0" />
+      {/* Glow Effect (Behind the Button) */}
+      <div className="absolute inset-0 mx-auto h-[50px] w-[200px] rounded-full blur-[50px] opacity-50 bg-gradient-to-r from-purple-500 to-blue-500 pointer-events-none z-0" />
 
       {/* Button Content */}
       <Icon icon={Icons.CHEVRON_UP} className="text-2xl pr-2 z-10" />
