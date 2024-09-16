@@ -411,7 +411,6 @@ export function DiscoverContent() {
                         : "/placeholder.png"
                     }
                     alt={media.poster_path ? "" : "failed to fetch :("}
-                    loading="lazy"
                     className="rounded-xl relative"
                   />
                   <h1 className="group relative pt-2 pr-1 text-[13.5px] whitespace-normal duration-[0.35s] font-semibold text-white opacity-0 group-hover:opacity-100 flex items-center">
