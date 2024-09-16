@@ -620,6 +620,37 @@ export function DiscoverContent() {
     return buttons;
   };
 
+  const renderScrollButton = (
+    categorySlug: string,
+    direction: "left" | "right",
+  ) => (
+    <button
+      type="button"
+      key={`${categorySlug}-${direction}`}
+      className="flex items-center rounded-full px-4 text-white py-3"
+      onClick={() => {
+        const element = document.getElementById(
+          `button-carousel-${categorySlug}`,
+        );
+        const scrollAmount = 200;
+
+        if (element) {
+          if (direction === "left") {
+            element.scrollBy({ left: -scrollAmount, behavior: "smooth" });
+          } else {
+            element.scrollBy({ left: scrollAmount, behavior: "smooth" });
+          }
+        }
+      }}
+    >
+      {direction === "left" ? (
+        <Icon icon={Icons.CHEVRON_LEFT} className="text-2xl" />
+      ) : (
+        <Icon icon={Icons.CHEVRON_RIGHT} className="text-2xl" />
+      )}
+    </button>
+  );
+
   return (
     <div>
       <div className="w-full max-w-screen-xl mx-auto px-4">
@@ -665,8 +696,10 @@ export function DiscoverContent() {
       <div className="mt-8 p-4 w-full max-w-screen-xl mx-auto">
         <h2 className="text-2xl font-bold mb-4 text-center">Movies:</h2>
         <div className="flex mb-4 overflow-x-auto">
+          <div className="">{renderScrollButton("movies", "left")}</div>
           <div
-            className="flex mb-4 overflow-x-auto"
+            id="button-carousel-movies"
+            className="flex mb-4 overflow-x-auto scroll-smooth"
             style={{
               scrollbarWidth: "thin",
               scrollbarColor: "transparent transparent",
@@ -677,12 +710,15 @@ export function DiscoverContent() {
               {renderMovieButtons()}
             </div>
           </div>
+          <div className="">{renderScrollButton("movies", "right")}</div>
         </div>
 
         <h2 className="text-2xl font-bold mb-4 text-center">TV Shows:</h2>
         <div className="flex mb-4 overflow-x-auto">
+          <div className="">{renderScrollButton("tvshows", "left")}</div>
           <div
-            className="flex mb-4 overflow-x-auto"
+            id="button-carousel-tvshows"
+            className="flex mb-4 overflow-x-auto scroll-smooth"
             style={{
               scrollbarWidth: "thin",
               scrollbarColor: "transparent transparent",
@@ -693,6 +729,7 @@ export function DiscoverContent() {
               {renderTvButtons()}
             </div>
           </div>
+          <div className="">{renderScrollButton("tvshows", "right")}</div>
         </div>
       </div>
       <div className="">
