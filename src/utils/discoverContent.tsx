@@ -48,7 +48,12 @@ function ScrollToTopButton() {
   return (
     <div className="fixed bottom-4 left-1/2 transform -translate-x-1/2 z-50">
       {/* Glow Effect (Behind the Button) */}
-      <div className="absolute inset-0 mx-auto h-[50px] w-[200px] rounded-full blur-[50px] opacity-50 bg-gradient-to-r from-purple-500 to-blue-500 pointer-events-none z-0" />
+      <div
+        className="absolute inset-0 mx-auto h-[50px] w-[200px] rounded-full blur-[50px] opacity-50 pointer-events-none z-0"
+        style={{
+          backgroundImage: `linear-gradient(to right, rgba(var(--colors-global-accentA)), rgba(var(--colors-buttons-toggle)))`,
+        }}
+      />
 
       {/* Button */}
       <button
