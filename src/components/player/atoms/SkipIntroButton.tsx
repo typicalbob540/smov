@@ -18,16 +18,15 @@ function shouldShowSkipButton(
   currentTime: number,
   skipData: SkipData,
 ): "always" | "hover" | "none" {
-  // Find start and end times
+  // Find start time
   const startSkip = skipData.skips.find(
     (skip) => skip.skip_position === "start",
   );
-  const endSkip = skipData.skips.find((skip) => skip.skip_position === "end");
 
-  if (!startSkip || !endSkip) return "none";
+  if (!startSkip) return "none";
 
-  // Show button if current time is between start and end
-  if (currentTime >= startSkip.time && currentTime < endSkip.time) {
+  // Show button from beginning until the skip point
+  if (currentTime >= 0 && currentTime < startSkip.time) {
     return "always";
   }
 
@@ -77,14 +76,14 @@ export function SkipIntroButton(props: {
   }
 
   const handleSkip = useCallback(() => {
-    // Find the end skip point
-    const endSkip = props.skipData.skips.find(
-      (skip) => skip.skip_position === "end",
+    // Find the start skip point
+    const startSkip = props.skipData.skips.find(
+      (skip) => skip.skip_position === "start",
     );
 
-    // If we found the end point and have display control, skip to it
-    if (endSkip && display) {
-      display.setTime(endSkip.time);
+    // If we found the start point and have display control, skip to it
+    if (startSkip && display) {
+      display.setTime(startSkip.time);
     }
   }, [props.skipData.skips, display]);
 

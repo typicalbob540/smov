@@ -60,8 +60,8 @@ export function PlayerPart(props: PlayerPartProps) {
 
   const skipData: SkipData = {
     skips: [
-      { skip_position: "start", time: 0.3 },
-      { skip_position: "end", time: 7 },
+      { skip_position: "start", time: 15 },
+      { skip_position: "end", time: 350 },
     ],
   };
 
