@@ -58,12 +58,21 @@ export function PlayerPart(props: PlayerPartProps) {
     }
   });
 
-  const skipData: SkipData = {
-    skips: [
-      { skip_position: "start", time: 15 },
-      { skip_position: "end", time: 350 },
-    ],
-  };
+  const source = usePlayerStore((s) => s.source);
+
+  // Create skipData from the source headers if they exist
+  const skipData: SkipData = source?.headers?.skipData
+    ? {
+        skips: Array.isArray(source.headers.skipData)
+          ? source.headers.skipData.map((skip: any) => ({
+              skip_position: skip.skip_position,
+              time: skip.time,
+            }))
+          : [],
+      }
+    : {
+        skips: [],
+      };
 
   return (
     <Player.Container onLoad={props.onLoad} showingControls={showTargets}>
