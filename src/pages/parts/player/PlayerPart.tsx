@@ -100,9 +100,12 @@ export function PlayerPart(props: PlayerPartProps) {
           <div className="text-center hidden xl:flex justify-center items-center">
             <Player.EpisodeTitle />
           </div>
-          <div className="hidden sm:flex items-center justify-end">
+          <a
+            href="https://pstream.org"
+            className="hidden sm:flex items-center justify-end"
+          >
             <BrandPill />
-          </div>
+          </a>
           <div className="flex sm:hidden items-center justify-end">
             {status === playerStatus.PLAYING ? (
               <>
