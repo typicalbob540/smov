@@ -91,34 +91,11 @@ export function PlayerPart(props: PlayerPartProps) {
       <Player.TopControls show={showTargets}>
         <div className="grid grid-cols-[1fr,auto] xl:grid-cols-3 items-center">
           <div className="flex space-x-3 items-center">
-            <Player.BackLink url={props.backUrl} />
-            <span className="text mx-3 text-type-secondary">/</span>
+            <div className="hidden">
+              <Player.BackLink url={props.backUrl} />
+              <span className="text mx-3 text-type-secondary">/</span>
+            </div>
             <Player.Title />
-
-            <button
-              type="button"
-              onClick={(e) => {
-                e.preventDefault();
-                if (!media) return;
-                const id = media
-                  .replace("tmdb-tv-", "")
-                  .replace("tmdb-movie-", "");
-                let url;
-                if (meta?.type === "movie") {
-                  url = `https://www.themoviedb.org/movie/${id}`;
-                } else {
-                  url = `https://www.themoviedb.org/tv/${id}`;
-                }
-                window.open(url, "_blank");
-              }}
-            >
-              <Icon
-                className="text-xs font-semibold text-type-secondary"
-                icon={Icons.CIRCLE_QUESTION}
-              />
-            </button>
-
-            <Player.BookmarkButton />
           </div>
           <div className="text-center hidden xl:flex justify-center items-center">
             <Player.EpisodeTitle />
@@ -162,7 +139,6 @@ export function PlayerPart(props: PlayerPartProps) {
             ) : null}
           </Player.LeftSideControls>
           <div className="flex items-center space-x-3">
-            <Player.Episodes />
             {status === playerStatus.PLAYING ? (
               <>
                 <Player.Pip />
@@ -192,7 +168,6 @@ export function PlayerPart(props: PlayerPartProps) {
             {/* Disable PiP for iOS PWA */}
             {!isIOSPWA &&
               (status === playerStatus.PLAYING ? <Player.Pip /> : null)}
-            <Player.Episodes />
             <Player.Settings />
             {/* Expand button for iOS PWA only */}
             {isIOSPWA && status === playerStatus.PLAYING && <Widescreen />}
@@ -215,11 +190,6 @@ export function PlayerPart(props: PlayerPartProps) {
       </Player.BottomControls>
 
       <Player.VolumeChangedPopout />
-
-      <Player.NextEpisodeButton
-        controlsShowing={showTargets}
-        onChange={props.onMetaChange}
-      />
     </Player.Container>
   );
 }
