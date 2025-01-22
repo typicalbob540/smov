@@ -102,6 +102,8 @@ export function PlayerPart(props: PlayerPartProps) {
           </div>
           <a
             href="https://pstream.org"
+            target="_blank"
+            rel="noreferrer"
             className="hidden sm:flex items-center justify-end"
           >
             <BrandPill />
