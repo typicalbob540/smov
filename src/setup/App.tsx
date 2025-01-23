@@ -9,8 +9,12 @@ import {
   useParams,
 } from "react-router-dom";
 
-import { convertLegacyUrl, isLegacyUrl } from "@/backend/metadata/getmeta";
-import { convertEmbedUrl } from "@/backend/metadata/tmdb";
+import {
+  convertEmbedUrl,
+  convertLegacyUrl,
+  isEmbedUrl,
+  isLegacyUrl,
+} from "@/backend/metadata/getmeta";
 import { useOnlineListener } from "@/hooks/usePing";
 import VideoTesterView from "@/pages/developer/VideoTesterView";
 import { Discover } from "@/pages/discover/Discover";
@@ -66,20 +70,18 @@ function App() {
   }, [setShowDowntime, maintenance]);
 
   function EmbedRedirectView({ children }: { children: ReactElement }) {
-    const { media, seasonNumber, episodeNumber } = useParams<{
-      media: string;
-      seasonNumber: string;
-      episodeNumber: string;
-    }>();
+    const location = useLocation();
     const navigate = useNavigate();
 
     useEffect(() => {
-      if (!media || !seasonNumber || !episodeNumber) return;
-      convertEmbedUrl(media, seasonNumber, episodeNumber).then((url) => {
-        navigate(url ?? "/", { replace: true });
+      const url = location.pathname;
+      if (!isEmbedUrl(url)) return;
+      convertEmbedUrl(location.pathname).then((convertedUrl) => {
+        navigate(convertedUrl ?? "/", { replace: true });
       });
-    }, [media, seasonNumber, episodeNumber, navigate]);
+    }, [location.pathname, navigate]);
 
+    if (isEmbedUrl(location.pathname)) return null;
     return children;
   }
 

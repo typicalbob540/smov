@@ -1,4 +1,3 @@
-/* eslint-disable no-console */
 import slugify from "slugify";
 
 import { conf } from "@/setup/config";
@@ -295,33 +294,34 @@ export function formatTMDBSearchResult(
   };
 }
 
-export async function convertEmbedUrl(
-  media: string,
+export async function getNumberedIDs(
+  id: string,
   seasonNumber: string,
   episodeNumber: string,
-): Promise<string | undefined> {
-  const meta = decodeTMDBId(media);
-  if (!meta) return undefined;
-  if (meta.type !== MWMediaType.SERIES) return undefined;
-
+): Promise<{ season: string; episode: string } | undefined> {
   const season = parseInt(seasonNumber, 10);
   const episode = parseInt(episodeNumber, 10);
-  if (Number.isNaN(season) || Number.isNaN(episode)) return undefined;
+  if (Number.isNaN(season) || Number.isNaN(episode)) {
+    return undefined;
+  }
 
-  const showDetails = await getMediaDetails(meta.id, TMDBContentTypes.TV);
+  const seasonData = await get<TMDBSeason>(`/tv/${id}/season/${season}`);
+  if (!seasonData || !seasonData.episodes) {
+    return undefined;
+  }
 
-  const seasonData = await get<TMDBSeason>(`/tv/${meta.id}/season/${season}`);
-
-  // Find the target episode
   const targetEpisode = seasonData.episodes.find(
     (e) => e.episode_number === episode,
   );
-  if (!targetEpisode) return undefined;
 
-  // Create the media URL with ids
-  const mediaUrlId = TMDBIdToUrlId(meta.type, meta.id, showDetails.name);
+  if (!targetEpisode) {
+    // eslint-disable-next-line no-console
+    console.log("Episode not found");
+    return undefined;
+  }
 
-  console.log(targetEpisode.id);
-
-  return `/media/${mediaUrlId}/${seasonData.id}/${targetEpisode.id}`;
+  return {
+    season: seasonData.id.toString(),
+    episode: targetEpisode.id.toString(),
+  };
 }
