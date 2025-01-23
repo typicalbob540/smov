@@ -56,17 +56,6 @@ export function RealPlayerView() {
     reset();
   }, [paramsData, reset]);
 
-  const metaChange = useCallback(
-    (meta: PlayerMeta) => {
-      if (meta?.type === "show")
-        navigate(
-          `/media/${params.media}/${meta.season?.tmdbId}/${meta.episode?.tmdbId}`,
-        );
-      else navigate(`/media/${params.media}`);
-    },
-    [navigate, params],
-  );
-
   const playAfterScrape = useCallback(
     (out: RunOutput | null) => {
       if (!out) return;
@@ -91,7 +80,7 @@ export function RealPlayerView() {
   );
 
   return (
-    <PlayerPart backUrl={backUrl} onMetaChange={metaChange}>
+    <PlayerPart backUrl={backUrl}>
       {status === playerStatus.IDLE ? (
         <MetaPart onGetMeta={setPlayerMeta} />
       ) : null}

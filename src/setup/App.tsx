@@ -10,25 +10,13 @@ import {
 } from "react-router-dom";
 
 import { convertLegacyUrl, isLegacyUrl } from "@/backend/metadata/getmeta";
-import { generateQuickSearchMediaUrl } from "@/backend/metadata/tmdb";
+import { convertEmbedUrl } from "@/backend/metadata/tmdb";
 import { useOnlineListener } from "@/hooks/usePing";
-import { AboutPage } from "@/pages/About";
-import { AdminPage } from "@/pages/admin/AdminPage";
 import VideoTesterView from "@/pages/developer/VideoTesterView";
 import { Discover } from "@/pages/discover/Discover";
-import { DmcaPage } from "@/pages/Dmca";
 import MaintenancePage from "@/pages/errors/MaintenancePage";
 import { NotFoundPage } from "@/pages/errors/NotFoundPage";
-import { HomePage } from "@/pages/HomePage";
 import { JipPage } from "@/pages/Jip";
-import { LoginPage } from "@/pages/Login";
-import { MigrationPage } from "@/pages/migration/Migration";
-import { MigrationDirectPage } from "@/pages/migration/MigrationDirect";
-import { OnboardingPage } from "@/pages/onboarding/Onboarding";
-import { OnboardingExtensionPage } from "@/pages/onboarding/OnboardingExtension";
-import { OnboardingProxyPage } from "@/pages/onboarding/OnboardingProxy";
-import { RegisterPage } from "@/pages/Register";
-import { SupportPage } from "@/pages/Support";
 import { Layout } from "@/setup/Layout";
 import { useHistoryListener } from "@/stores/history";
 import { LanguageProvider } from "@/stores/language";
@@ -57,38 +45,6 @@ function LegacyUrlView({ children }: { children: ReactElement }) {
   return children;
 }
 
-function QuickSearch() {
-  const { query } = useParams<{ query: string }>();
-  const navigate = useNavigate();
-
-  useEffect(() => {
-    if (query) {
-      generateQuickSearchMediaUrl(query).then((url) => {
-        navigate(url ?? "/", { replace: true });
-      });
-    } else {
-      navigate("/", { replace: true });
-    }
-  }, [query, navigate]);
-
-  return null;
-}
-
-function QueryView() {
-  const { query } = useParams<{ query: string }>();
-  const navigate = useNavigate();
-
-  useEffect(() => {
-    if (query) {
-      navigate(`/browse/${query}`, { replace: true });
-    } else {
-      navigate("/", { replace: true });
-    }
-  }, [query, navigate]);
-
-  return null;
-}
-
 export const maintenanceTime = "March 31th 11:00 PM - 5:00 AM EST";
 
 function App() {
@@ -109,12 +65,50 @@ function App() {
     }
   }, [setShowDowntime, maintenance]);
 
+  function EmbedRedirectView({ children }: { children: ReactElement }) {
+    const { media, seasonNumber, episodeNumber } = useParams<{
+      media: string;
+      seasonNumber: string;
+      episodeNumber: string;
+    }>();
+    const navigate = useNavigate();
+
+    useEffect(() => {
+      if (!media || !seasonNumber || !episodeNumber) return;
+      convertEmbedUrl(media, seasonNumber, episodeNumber).then((url) => {
+        navigate(url ?? "/", { replace: true });
+      });
+    }, [media, seasonNumber, episodeNumber, navigate]);
+
+    return children;
+  }
+
   return (
     <Layout>
       <LanguageProvider />
       {!showDowntime && (
         <Routes>
           {/* pages */}
+          <Route
+            path="/embed/:media"
+            element={
+              <EmbedRedirectView>
+                <Suspense fallback={null}>
+                  <PlayerView />
+                </Suspense>
+              </EmbedRedirectView>
+            }
+          />
+          <Route
+            path="/embed/:media/:seasonNumber/:episodeNumber"
+            element={
+              <EmbedRedirectView>
+                <Suspense fallback={null}>
+                  <PlayerView />
+                </Suspense>
+              </EmbedRedirectView>
+            }
+          />
           <Route
             path="/media/:media"
             element={
