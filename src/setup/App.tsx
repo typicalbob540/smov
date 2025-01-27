@@ -16,6 +16,7 @@ import {
   isLegacyUrl,
 } from "@/backend/metadata/getmeta";
 import { useOnlineListener } from "@/hooks/usePing";
+import { AdminPage } from "@/pages/admin/AdminPage";
 import VideoTesterView from "@/pages/developer/VideoTesterView";
 import { Discover } from "@/pages/discover/Discover";
 import MaintenancePage from "@/pages/errors/MaintenancePage";
@@ -134,7 +135,9 @@ function App() {
           <Route path="/jip" element={<JipPage />} />
           {/* Discover page */}
           <Route path="/discover" element={<Discover />} />
-          {/* Settings page */}
+          {/* admin routes */}
+          <Route path="/admin" element={<AdminPage />} />
+          {/* other */}
           <Route path="/dev" element={<DeveloperPage />} />
           <Route path="/dev/video" element={<VideoTesterView />} />
           {/* developer routes that can abuse workers are disabled in production */}
