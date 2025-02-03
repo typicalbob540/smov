@@ -4,7 +4,6 @@ import { useEffect, useRef, useState } from "react";
 import { useNavigate } from "react-router-dom";
 
 import { get } from "@/backend/metadata/tmdb";
-import { Divider } from "@/components/utils/Divider";
 import { Flare } from "@/components/utils/Flare";
 import { useIsMobile } from "@/hooks/useIsMobile";
 import {
@@ -44,6 +43,11 @@ const editorPicksMovies = [
   { id: 157336, type: "movie" }, // Interstellar
   { id: 762, type: "movie" }, // Monty Python and the Holy Grail
   { id: 666243, type: "movie" }, // The Witcher: Nightmare of the Wolf
+  { id: 545611, type: "movie" }, // Everything Everywhere All at Once
+  { id: 329, type: "movie" }, // Jurrassic Park
+  { id: 330459, type: "movie" }, // Rogue One: A Star Wars Story
+  { id: 279, type: "movie" }, // Amadeus
+  { id: 823219, type: "movie" }, // Flow
 ];
 
 const editorPicksTVShows = [
@@ -59,6 +63,8 @@ const editorPicksTVShows = [
   { id: 90228, type: "show" }, // Dune Prophecy
   { id: 13916, type: "show" }, // Death Note
   { id: 71912, type: "show" }, // The Witcher
+  { id: 61222, type: "show" }, // Bojack Horseman
+  { id: 93405, type: "show" }, // Squid Game
 ];
 
 function ScrollToTopButton() {
@@ -636,8 +642,8 @@ export function DiscoverContent() {
                 )
               );
             })
-            .slice(0, 20)
-            .map((media) => (
+            .slice(0, 25)
+            .map((media, index, array) => (
               <a
                 key={media.id}
                 onClick={() =>
@@ -645,8 +651,14 @@ export function DiscoverContent() {
                     `/media/tmdb-${isTVShow ? "tv" : "movie"}-${media.id}-from-discover`,
                   )
                 }
-                className="max-h-200 text-center relative mt-3 mx-[0.2em] md:mx-[0.5em] transition-transform duration-[0.45s] hover:scale-105"
-                style={{ flex: `0 0 ${movieWidth}` }} // Set a fixed width for each movie
+                className={`max-h-200 text-center relative mt-3 transition-transform duration-[0.45s] hover:scale-105 ${
+                  index === 0
+                    ? "md:ml-[6.5rem] mr-[0.2em] md:mr-[0.5em]"
+                    : index === array.length - 1
+                      ? "md:mr-[6.5rem] ml-[0.2em] md:ml-[0.5em]"
+                      : "mx-[0.2em] md:mx-[0.5em]"
+                }`}
+                style={{ flex: `0 0 ${movieWidth}` }}
               >
                 <Flare.Base className="group cursor-pointer rounded-xl relative p-[0.65em] bg-background-main transition-colors duration-300 bg-transparent">
                   <Flare.Light
